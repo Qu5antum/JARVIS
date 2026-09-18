@@ -21,4 +21,3 @@ class ContactRepository(BaseRepository):
         )
 
         return result.scalars().all()
-        

@@ -12,6 +12,7 @@ class Config(BaseSettings):
     MINECRAFT_DIRECTORY: str = os.getenv("MINECRAFT_DIRECTORY")
     DISCORD_DIRECTORY: str = os.getenv("DISCORD_DIRECTORY")
     STEAM_DIRECTORY: str = os.getenv("STEAM_DIRECTORY")
+    CAPCUT_DIRECTORY: str = os.getenv("CAPCUT_DIRECTORY")
     WEATHER_API_KEY: str = os.getenv("WEATHER_API_KEY")
 
     model_config = SettingsConfigDict(

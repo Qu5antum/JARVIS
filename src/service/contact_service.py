@@ -3,6 +3,7 @@ import logging
 
 from src.repositories.contact_repository import ContactRepository
 from src.tts.tts import speak
+from src.schemas.contact_schema import ContactResoponse
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -51,3 +52,7 @@ class ContactService:
         logger.info("Успешный ответ")
         
         return names
+
+    def get_all_contacts(self) -> list[ContactResoponse]:
+        return self.contact_repo.get_all()
+    

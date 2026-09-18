@@ -47,6 +47,7 @@ from .key_movement import (
 from src.service.contact_service import ContactService
 from src.database.db import SessionLocal
 from src.service.whatsapp import WhatsAppService
+from .screen_recorder import ScreenRecorder
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -57,8 +58,9 @@ session = SessionLocal()
 timer_manager = TimerManager()
 contact_service = ContactService(session=session)
 whatsapp_service = WhatsAppService()
+recorder = ScreenRecorder()
 
-
+# TODO: добавить возможность отправления сообщения по почте
 class JarvisMain:
     def __init__(self) -> None:
         if platform == "linux" or platform == "linux2":
@@ -135,6 +137,11 @@ class JarvisMain:
 
             webbrowser.get("chrome").open_new_tab(url)
 
+            return True
+
+        if "открой почту" in command or "запусти почту" in command:
+            speak("Открываю почту")
+            webbrowser.get("chrome").open("https://mail.google.com/mail")
             return True
             
         if any(
@@ -326,6 +333,76 @@ class JarvisMain:
             webbrowser.get("chrome").open("https://www.instagram.com/")
             return True
 
+        if (
+            "открой канва" in command
+            or "запусти канва" in command
+            or "открой canva" in command
+            or "запусти canva" in command
+        ):
+            speak("Открываю Canva")
+            webbrowser.get("chrome").open("https://www.canva.com/")
+            return True
+
+        if (
+            "открой spotify" in command
+            or "запусти spotify" in command
+            or "открой спотифай" in command
+            or "запусти спотифай" in command
+        ):
+            speak("Открываю spotify")
+            webbrowser.get("chrome").open("https://open.spotify.com/")
+            return True
+
+        if (
+            "открой рэддит" in command
+            or "запусти рэддит" in command
+            or "открой reddit" in command
+            or "запусти reddit" in command
+        ):
+            speak("Открываю reddit")
+            webbrowser.get("chrome").open("https://www.reddit.com/")
+            return True
+
+        if (
+            "открой икс" in command
+            or "запусти икс" in command
+            or "открой x" in command
+            or "запусти x" in command
+        ): 
+            speak("Открываю X")
+            webbrowser.get("chrome").open("https://x.com/")
+            return True
+
+        if (
+            "открой фейсбук" in command
+            or "запусти фейсбук" in command
+            or "открой facebook" in command
+            or "запусти facebook" in command
+        ):
+            speak("Открываю facebook")
+            webbrowser.get("chrome").open("https://www.facebook.com/")
+            return True
+
+        if (
+            "открой линкедин" in command
+            or "запусти линкедин" in command
+            or "открой linkedln" in command
+            or "запусти linkedln" in command
+        ):
+            speak("Открываю linkedln")
+            webbrowser.get("chrome").open("https://www.linkedin.com/feed/")
+            return True
+
+        if (
+            "открой капкут" in command
+            or "запусти капкут" in command
+            or "открой capcut" in command
+            or "запусти capcut" in command
+        ):
+            speak("Открываю Capcut")
+            subprocess.run([settings.CAPCUT_DIRECTORY])
+            return True
+
         if any(
             phrase in command
             for phrase in [
@@ -365,6 +442,37 @@ class JarvisMain:
                 webbrowser.get("chrome").open("https://store.steampowered.com/")
 
             return True
+
+        if (
+            "открой ворд" in command
+            or "запусти ворд" in command
+            or "открой word" in command
+            or "запусти word" in command
+        ):
+            speak("Открываю Word")
+            webbrowser.get("chrome").open("https://word.cloud.microsoft/")
+            return True
+
+        if (
+            "открой поверпоинт" in command
+            or "запусти поверпоинт" in command
+            or "открой powerpoint" in command
+            or "запусти powerpoint" in command
+        ):
+            speak("Открываю Powerpoint")
+            webbrowser.get("chrome").open("https://powerpoint.cloud.microsoft/")
+            return True
+
+        if (
+            "открой экзель" in command
+            or "запусти экзель" in command
+            or "открой excel" in command
+            or "запусти excel" in command
+        ): 
+            speak("Открываю Excel")
+            webbrowser.get("chrome").open("https://excel.cloud.microsoft/")
+            return True
+
 
         if "открой настройки" in command or "запусти наcтройки" in command:
             speak("Открываю настройки")
@@ -875,6 +983,16 @@ class JarvisMain:
 
             return True
 
+        if (
+            "запись экрана" in command
+            or "начни запись экрана" in command
+            or "начни запись" in command
+        ):
+            recorder.start()
+
+        elif "останови запись" in command:
+            recorder.stop()
+
         if "интернет" in command or "скорость интернета" in command:
             speak("Подключение к серверам Speedtest.net")
             speak(check_internet_speed())
@@ -896,7 +1014,18 @@ class JarvisMain:
             speak("Так же можете указать номер телефона в терминале с плюс в началe")
             phone = input("Укажите номер телефона в терминале с плюс в начале: ")
 
-            contact_service.create_contact(name=name, phone=phone)    
+            contact_service.create_contact(name=name, phone=phone)   
+
+        if (
+            "выведи все контакты" in command
+            or "открой все контакты" in command
+        ):
+            contacts = contact_service.get_all_contacts()
+            
+            speak("Вывожу все контакты на терминал")
+
+            for contact in contacts:
+                print(f"Имя: {contact.name}, Номер Телефона: {contact.phone}")
 
         if (
             "напиши сообщение" in command
