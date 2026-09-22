@@ -222,9 +222,9 @@ __marimo__/
 venv
 *.db
 database.db
+*.pt
 
 downloads
 random
-detection
 
 PyWhatKit_DB.txt
