@@ -25,7 +25,7 @@ class CameraPipeline:
         self.cap: Optional[cv2.VideoCapture] = None
 
     def open(self) -> bool:
-        self.cap = cv2.VideoCapture(self.source)
+        self.cap = cv2.VideoCapture(self.source, cv2.CAP_DSHOW)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
         if not self.cap.isOpened():
@@ -79,3 +79,17 @@ class CameraPipeline:
         if self.cap is not None:
             self.cap.release()
         cv2.destroyAllWindows()
+
+    def count_people(self) -> int:
+        if self.cap is None:
+            if not self.open():
+                raise RuntimeError("Не удалось открыть камеру")
+
+        ret, frame = self.cap.read()
+
+        if not ret:
+            raise RuntimeError("Не удалось получить кадр с камеры")
+
+        persons = self.detector.detect(frame)
+
+        return len(persons)

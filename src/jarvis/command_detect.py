@@ -7,7 +7,6 @@ import webbrowser
 from datetime import datetime
 import locale
 import math
-from sqlalchemy.orm import Session
 
 from src.service.downloader import download_video, Format
 from src.jarvis.media_contoroller import MediaController
@@ -48,6 +47,7 @@ from src.service.contact_service import ContactService
 from src.database.db import SessionLocal
 from src.service.whatsapp import WhatsAppService
 from .screen_recorder import ScreenRecorder
+from src.detection.camera_pipeline import CameraPipeline
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -59,6 +59,7 @@ timer_manager = TimerManager()
 contact_service = ContactService(session=session)
 whatsapp_service = WhatsAppService()
 recorder = ScreenRecorder()
+camera_pipeline = CameraPipeline(source=0, draw=False)
 
 # TODO: добавить возможность отправления сообщения по почте
 class JarvisMain:
@@ -1063,5 +1064,17 @@ class JarvisMain:
 
 
             whatsapp_service.send_message(phone=phone, message=message)
+
+        if "сколько человек видишь" in command or "сколько человек" in command:
+            count = camera_pipeline.count_people()
+
+            if count == 0:
+                speak("Не вижу людей")
+            elif count == 1:
+                speak("Я вижу одного человека")
+            else:
+                speak(f"Я вижу {count} человек")
+
+            return True
 
         return False 
