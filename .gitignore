@@ -228,3 +228,7 @@ downloads
 random
 
 PyWhatKit_DB.txt
+
+*.task
+
+hand_tracker_preview.txt

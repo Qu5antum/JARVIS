@@ -3,15 +3,11 @@ from enum import Enum
 from pathlib import Path
 import yt_dlp
 
-
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
 logger = logging.getLogger("download")
-
-DOWNLOAD_DIR = Path("downloads")
-DOWNLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 
 class Format(str, Enum):
@@ -20,11 +16,16 @@ class Format(str, Enum):
 
 
 def download_video(url: str, format: Format) -> Path:
-    output_template = DOWNLOAD_DIR / "%(title)s.%(ext)s"
+    if format == Format.MP4:
+        output_template = Path.home() / "Videos" / "JARVIS"
+    elif format == Format.MP3:
+        output_template = Path.home() / "Music" / "JARVIS"
+
+    output_template.mkdir(parents=True, exist_ok=True)
 
     if format == Format.MP3:
         ydl_opts = {
-            "outtmpl": str(output_template),
+            "outtmpl": str(output_template / "%(title)s.%(ext)s"),
             "format": "bestaudio/best",
             "quiet": True,
             "no_warnings": True,

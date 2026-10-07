@@ -48,6 +48,7 @@ from src.database.db import SessionLocal
 from src.service.whatsapp import WhatsAppService
 from .screen_recorder import ScreenRecorder
 from src.detection.camera_pipeline import CameraPipeline
+from .computer_controller import ComputerControl
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -60,6 +61,7 @@ contact_service = ContactService(session=session)
 whatsapp_service = WhatsAppService()
 recorder = ScreenRecorder()
 camera_pipeline = CameraPipeline(source=0, draw=False)
+computer_control = ComputerControl()
 
 # TODO: добавить возможность отправления сообщения по почте
 class JarvisMain:
@@ -201,7 +203,7 @@ class JarvisMain:
             try:
                 file = download_video(url=url, format=format)
 
-                speak("Файл успешно скачан")
+                speak(f"Файл успешно скачан в дерикторий: {file}")
 
                 logger.info(f"Файл находится здесь: {file}")
 
@@ -1076,5 +1078,13 @@ class JarvisMain:
                 speak(f"Я вижу {count} человек")
 
             return True
+
+        if "включи управление рукой" in command or "запусти управление рукой" in command:    
+            computer_control.start()
+            speak("Управление рукой включено")
+
+        if "выключи управление рукой" in command or "отключи управление рукой" in command:
+            computer_control.stop()
+            speak("Управление рукой выключено")
 
         return False 
